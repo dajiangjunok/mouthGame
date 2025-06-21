@@ -87,13 +87,13 @@ function MusicGame() {
     transition: 'background-color 0.2s ease'
   }
 
-  const countdownStyle: React.CSSProperties = {
-    fontSize: '48px',
-    fontWeight: 'bold',
-    color: '#ef4444',
-    textAlign: 'center',
-    margin: '20px 0'
-  }
+  // const countdownStyle: React.CSSProperties = {
+  //   fontSize: '48px',
+  //   fontWeight: 'bold',
+  //   color: '#ef4444',
+  //   textAlign: 'center',
+  //   margin: '20px 0'
+  // }
 
   const countdownOverlayStyle: React.CSSProperties = {
     position: 'fixed',

@@ -39,8 +39,8 @@ function MusicGame() {
     volume,
     startBGM,
     stopBGM,
-    pauseBGM,
-    resumeBGM,
+    // pauseBGM,
+    // resumeBGM,
     toggleMute,
     setVolume
   } = useBackgroundMusic()

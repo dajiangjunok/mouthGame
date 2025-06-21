@@ -10,10 +10,9 @@ interface PersonState {
 interface PersonRowProps {
   persons: PersonState[]
   label: string
-  playerIndex?: number
 }
 
-function PersonRow({ persons, label, playerIndex }: PersonRowProps) {
+function PersonRow({ persons, label }: PersonRowProps) {
   const rowStyle: React.CSSProperties = {
     display: 'flex',
     flexDirection: 'column',
