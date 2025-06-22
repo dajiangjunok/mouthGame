@@ -16,7 +16,7 @@ function MusicGame() {
     gameState,
     demoPersons,
     playPersons,
-    countdown,
+    // countdown,
     errorMessage,
     startGame,
     retryLevel,
@@ -335,9 +335,7 @@ function MusicGame() {
 
       {/* 倒计时浮层 */}
       {gameState.gamePhase === 'countdown' && (
-        <div style={countdownOverlayStyle}>
-          {countdown > 0 ? countdown : '开始！'}
-        </div>
+        <div style={countdownOverlayStyle}>Go!</div>
       )}
     </div>
   )

@@ -19,7 +19,7 @@ function PersonRow({ persons, label }: PersonRowProps) {
     alignItems: 'center',
     gap: '16px',
     padding: '20px',
-    backgroundColor: '#fff',
+    backgroundColor: '#f3f0ed',
     borderRadius: '12px',
     border: '2px solid #e2e8f0',
     minWidth: '400px'

@@ -19,7 +19,7 @@ function MusicGame() {
     gameState,
     demoPersons,
     playPersons,
-    countdown,
+    // countdown,
     errorMessage,
     startGame,
     retryLevel,
@@ -111,7 +111,7 @@ function MusicGame() {
     padding: '20px',
     border: '4px solid #303030',
     borderRadius: '0',
-    backgroundColor: '#fff',
+    backgroundColor: '#f3f0ed',
     boxShadow: '8px 8px 0px #303030',
     position: 'relative'
   }
@@ -137,7 +137,7 @@ function MusicGame() {
 
   const livesStyle: React.CSSProperties = {
     color: '#303030',
-    backgroundColor: '#fff',
+    backgroundColor: '#f3f0ed',
     border: '2px solid #303030',
     padding: '8px 12px',
     borderRadius: '0',
@@ -146,7 +146,7 @@ function MusicGame() {
 
   const scoreStyle: React.CSSProperties = {
     color: '#303030',
-    backgroundColor: '#fff',
+    backgroundColor: '#f3f0ed',
     border: '2px solid #303030',
     padding: '8px 12px',
     borderRadius: '0',
@@ -155,7 +155,7 @@ function MusicGame() {
 
   const levelStyle: React.CSSProperties = {
     color: '#303030',
-    backgroundColor: '#fff',
+    backgroundColor: '#f3f0ed',
     border: '2px solid #303030',
     padding: '8px 12px',
     borderRadius: '0',
@@ -169,7 +169,7 @@ function MusicGame() {
     border: '4px solid #303030',
     borderRadius: '0',
     cursor: 'pointer',
-    backgroundColor: '#fff',
+    backgroundColor: '#f3f0ed',
     color: '#303030',
     transition: 'all 0.1s ease',
     boxShadow: '6px 6px 0px #303030',
@@ -187,7 +187,7 @@ function MusicGame() {
     alignItems: 'center',
     zIndex: 200,
     padding: '12px',
-    backgroundColor: '#fff',
+    backgroundColor: '#f3f0ed',
     border: '3px solid #303030',
     borderRadius: '0',
     boxShadow: '4px 4px 0px #303030'
@@ -219,7 +219,7 @@ function MusicGame() {
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    backgroundColor: '#fff',
+    backgroundColor: '#f3f0ed',
     padding: '30px',
     borderRadius: '0',
     border: '4px solid #303030',
@@ -237,7 +237,7 @@ function MusicGame() {
     border: '3px solid #303030',
     borderRadius: '0',
     cursor: 'pointer',
-    backgroundColor: '#fff',
+    backgroundColor: '#f3f0ed',
     color: '#303030',
     transition: 'all 0.1s ease',
     margin: '0 8px',
@@ -288,7 +288,7 @@ function MusicGame() {
     padding: '20px',
     border: '4px solid #303030',
     borderRadius: '0',
-    backgroundColor: '#fff',
+    backgroundColor: '#f3f0ed',
     boxShadow: '8px 8px 0px #303030'
   }
 
@@ -314,7 +314,7 @@ function MusicGame() {
     textAlign: 'center',
     fontSize: '16px',
     color: '#303030',
-    backgroundColor: '#fff',
+    backgroundColor: '#f3f0ed',
     padding: '16px',
     borderRadius: '0',
     border: '3px solid #303030',
@@ -327,7 +327,7 @@ function MusicGame() {
     textAlign: 'center',
     fontSize: '18px',
     color: '#303030',
-    backgroundColor: '#fff',
+    backgroundColor: '#f3f0ed',
     padding: '20px',
     borderRadius: '0',
     border: '4px solid #303030',
@@ -340,7 +340,7 @@ function MusicGame() {
     textAlign: 'center',
     fontSize: '18px',
     color: '#303030',
-    backgroundColor: '#fff',
+    backgroundColor: '#f3f0ed',
     padding: '20px',
     borderRadius: '0',
     border: '4px solid #303030',
@@ -567,9 +567,7 @@ function MusicGame() {
 
       {/* 倒计时浮层 */}
       {gameState.gamePhase === 'countdown' && (
-        <div style={countdownOverlayStyle}>
-          {countdown > 0 ? countdown : '开始！'}
-        </div>
+        <div style={countdownOverlayStyle}>Go!</div>
       )}
 
       {/* 音乐播放提示 */}

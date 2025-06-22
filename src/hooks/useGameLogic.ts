@@ -201,7 +201,7 @@ export function useGameLogic() {
       // 检查demo是否结束
       if (now - gameState.demoStartTime >= currentLevel.totalDuration) {
         setGameState(prev => ({ ...prev, gamePhase: 'countdown' }))
-        setCountdown(3)
+        setCountdown(1)
         return
       }
     }
