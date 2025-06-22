@@ -298,31 +298,31 @@ function MusicGame() {
     textTransform: 'uppercase'
   }
 
-  const countdownOverlayStyle: React.CSSProperties = {
-    position: 'fixed',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    backgroundColor: 'rgba(255, 255, 255, 0.95)',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    zIndex: 1002, // 确保在模糊层和其他弹窗之上
-    fontSize: '80px',
-    fontWeight: 'bold',
-    color: '#303030',
-    textShadow: 'none',
-    fontFamily: '"Courier New", "Monaco", "Menlo", monospace',
-    border: '6px solid #303030',
-    borderRadius: '0',
-    padding: '40px 60px',
-    boxShadow: '12px 12px 0px #303030',
-    minWidth: '200px',
-    textAlign: 'center',
-    // 防止抖动的稳定性样式
-    willChange: 'transform',
-    backfaceVisibility: 'hidden'
-  }
+  // const countdownOverlayStyle: React.CSSProperties = {
+  //   position: 'fixed',
+  //   top: '50%',
+  //   left: '50%',
+  //   transform: 'translate(-50%, -50%)',
+  //   backgroundColor: 'rgba(255, 255, 255, 0.95)',
+  //   display: 'flex',
+  //   alignItems: 'center',
+  //   justifyContent: 'center',
+  //   zIndex: 1002, // 确保在模糊层和其他弹窗之上
+  //   fontSize: '80px',
+  //   fontWeight: 'bold',
+  //   color: '#303030',
+  //   textShadow: 'none',
+  //   fontFamily: '"Courier New", "Monaco", "Menlo", monospace',
+  //   border: '6px solid #303030',
+  //   borderRadius: '0',
+  //   padding: '40px 60px',
+  //   boxShadow: '12px 12px 0px #303030',
+  //   minWidth: '200px',
+  //   textAlign: 'center',
+  //   // 防止抖动的稳定性样式
+  //   willChange: 'transform',
+  //   backfaceVisibility: 'hidden'
+  // }
 
   // const gameContentStyle: React.CSSProperties = {
   //   display: 'flex',
@@ -458,6 +458,23 @@ function MusicGame() {
   // 根据游戏状态渲染不同的覆盖层
   const renderOverlay = () => {
     switch (gameState.gamePhase) {
+      case 'countdown':
+        return (
+          <div style={overlayStyle}>
+            <div
+              style={{
+                fontSize: '80px',
+                fontWeight: 'bold',
+                color: '#303030',
+                textAlign: 'center',
+                fontFamily: '"Courier New", "Monaco", "Menlo", monospace'
+              }}
+            >
+              Go!
+            </div>
+          </div>
+        )
+
       case 'waiting':
         return (
           <div style={fullOverlayStyle}>
@@ -723,10 +740,7 @@ function MusicGame() {
         {renderOverlay()}
       </div>
 
-      {/* 倒计时浮层 */}
-      {gameState.gamePhase === 'countdown' && (
-        <div style={countdownOverlayStyle}>Go!</div>
-      )}
+      {/* 倒计时浮层移到游戏区域内渲染 */}
 
       {/* 音乐播放提示 */}
       {showMusicPrompt && isBGMLoaded && !userHasInteracted && (
