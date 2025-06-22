@@ -1,6 +1,6 @@
 // 游戏数据类型定义
 export interface GameAction {
-  personIndex: number // 小人索引 (0-4)
+  personIndex: number // 小牛马索引 (0-4)
   startTime: number // 开始张嘴时间 (毫秒)
   duration: number // 张嘴持续时间 (毫秒)
 }
@@ -22,7 +22,7 @@ export interface GameState {
     | 'playing'
     | 'result'
     | 'gameOver'
-  playerIndex: number // 玩家控制的小人索引
+  playerIndex: number // 玩家控制的小牛马索引
   isPlayerMouthOpen: boolean
   demoStartTime: number
   playStartTime: number

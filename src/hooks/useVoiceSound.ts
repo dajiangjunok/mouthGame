@@ -21,7 +21,7 @@ export function useVoiceSound(personId: string) {
   const playVoice = useCallback(async () => {
     initAudio()
 
-    // 如果已经有其他小人在播放，先停止
+    // 如果已经有其他小牛马在播放，先停止
     if (currentPlayingPersonId && currentPlayingPersonId !== personId) {
       if (globalAudio) {
         globalAudio.pause()
@@ -35,7 +35,7 @@ export function useVoiceSound(personId: string) {
         await globalAudio.play()
         currentPlayingPersonId = personId
         isPlayingRef.current = true
-        console.log(`小人${personId}张嘴声音开始播放`)
+        console.log(`小牛马${personId}张嘴声音开始播放`)
       } catch (error) {
         console.error('播放张嘴声音失败:', error)
       }
@@ -53,7 +53,7 @@ export function useVoiceSound(personId: string) {
       globalAudio.currentTime = 0
       currentPlayingPersonId = null
       isPlayingRef.current = false
-      console.log(`小人${personId}张嘴声音停止播放`)
+      console.log(`小牛马${personId}张嘴声音停止播放`)
     }
   }, [personId])
 

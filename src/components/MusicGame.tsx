@@ -97,19 +97,25 @@ function MusicGame() {
 
   const countdownOverlayStyle: React.CSSProperties = {
     position: 'fixed',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    backgroundColor: 'rgba(255, 255, 255, 0.95)',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     zIndex: 1000,
-    fontSize: '72px',
+    fontSize: '80px',
     fontWeight: 'bold',
-    color: '#ffffff',
-    textShadow: '2px 2px 4px rgba(0, 0, 0, 0.8)'
+    color: '#000',
+    textShadow: 'none',
+    fontFamily: '"Courier New", "Monaco", "Menlo", monospace',
+    border: '6px solid #000',
+    borderRadius: '0',
+    padding: '40px 60px',
+    boxShadow: '12px 12px 0px #000',
+    minWidth: '200px',
+    textAlign: 'center'
   }
 
   const gameContentStyle: React.CSSProperties = {
@@ -179,7 +185,7 @@ function MusicGame() {
   }
 
   const renderGameContent = () => {
-    // 基础游戏区域 - 始终显示两排小人
+    // 基础游戏区域 - 始终显示两排小牛马
     const baseGameArea = (
       <div style={gameAreaStyle}>
         <PersonRow persons={demoPersons} label="示例表演" />
@@ -189,10 +195,10 @@ function MusicGame() {
             <p>请仔细观看示例表演，记住节奏！</p>
           )}
           {gameState.gamePhase === 'countdown' && (
-            <p>准备好！按住空格键控制你的小人张嘴</p>
+            <p>准备好！按住空格键控制你的小牛马张嘴</p>
           )}
           {gameState.gamePhase === 'playing' && (
-            <p>按住空格键控制你的小人张嘴！</p>
+            <p>按住空格键控制你的小牛马张嘴！</p>
           )}
         </div>
       </div>
@@ -207,9 +213,11 @@ function MusicGame() {
               <div style={instructionStyle}>
                 <p>欢迎来到嘴炮游戏！</p>
                 <p>游戏规则：</p>
-                <p>1. 观看第一排小人的示例表演</p>
+                <p>1. 观看第一排小牛马的示例表演</p>
                 <p>2. 倒计时后，第二排开始模仿</p>
-                <p>3. 你控制YOU上的小人,你控制YOU上的小人，按住空格键张嘴</p>
+                <p>
+                  3. 你控制YOU上的小牛马,你控制YOU上的小牛马，按住空格键张嘴
+                </p>
                 <p>4. 跟随示例的节奏，准确模仿张嘴时机和时长</p>
                 <p>5. 你有3次生命，出错会扣除生命</p>
               </div>

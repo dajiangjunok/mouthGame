@@ -11,7 +11,7 @@ interface GameState {
     | 'playing'
     | 'result'
     | 'gameOver'
-  playerIndex: number // 玩家控制的小人索引
+  playerIndex: number // 玩家控制的小牛马索引
   isPlayerMouthOpen: boolean
   demoStartTime: number
   playStartTime: number

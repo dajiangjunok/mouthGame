@@ -1,6 +1,6 @@
 // 游戏数据类型定义
 export interface GameAction {
-  personIndex: number // 小人索引 (0-4)
+  personIndex: number // 小牛马索引 (0-4)
   startTime: number // 开始张嘴时间 (毫秒)
   duration: number // 张嘴持续时间 (毫秒)
 }
@@ -23,7 +23,7 @@ export const gameLevels: GameLevel[] = [
     ]
   },
 
-  // 第2关 - 基础级，两个不同小人
+  // 第2关 - 基础级，两个不同小牛马
   {
     id: 2,
     totalDuration: 5000,

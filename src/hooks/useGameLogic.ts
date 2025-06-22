@@ -8,7 +8,7 @@ interface PersonState {
 }
 
 interface GameAction {
-  personIndex: number // 小人索引 (0-4)
+  personIndex: number // 小牛马索引 (0-4)
   startTime: number // 开始张嘴时间 (毫秒)
   duration: number // 张嘴持续时间 (毫秒)
 }
@@ -24,7 +24,7 @@ interface GameState {
     | 'playing'
     | 'result'
     | 'gameOver'
-  playerIndex: number // 玩家控制的小人索引
+  playerIndex: number // 玩家控制的小牛马索引
   isPlayerMouthOpen: boolean
   demoStartTime: number
   playStartTime: number
@@ -54,7 +54,7 @@ export function useGameLogic() {
   const animationFrameRef = useRef<number | undefined>(undefined)
   const playerActionsRef = useRef<{ startTime: number; endTime: number }[]>([])
 
-  // 初始化小人状态
+  // 初始化小牛马状态
   const initializePersons = useCallback(() => {
     const persons: PersonState[] = Array.from({ length: 5 }, (_, index) => ({
       index,
@@ -64,7 +64,7 @@ export function useGameLogic() {
     return persons
   }, [gameState.playerIndex])
 
-  // 检查当前时间应该张嘴的小人
+  // 检查当前时间应该张嘴的小牛马
   const getActivePersons = useCallback(
     (actions: GameAction[], currentTime: number, startTime: number) => {
       const relativeTime = currentTime - startTime
@@ -79,80 +79,109 @@ export function useGameLogic() {
     []
   )
 
-  // 检查玩家表现 - 严格检查顺序，宽松检查时机和时长
+  // 检查玩家表现 - 严格检查次数、顺序和时机
   const checkPlayerPerformance = useCallback(() => {
     const currentLevel = gameLevels[gameState.currentLevel]
-    const playerActions = currentLevel.actions.filter(
-      action => action.personIndex === gameState.playerIndex
+    const playerActions = currentLevel.actions
+      .filter(action => action.personIndex === gameState.playerIndex)
+      .sort((a, b) => a.startTime - b.startTime) // 按时间顺序排序
+
+    const recordedActions = playerActionsRef.current.sort(
+      (a, b) => a.startTime - b.startTime
     )
-    const recordedActions = playerActionsRef.current
 
     let hasError = false
     let errorMessage = ''
 
-    // 1. 严格检查：玩家是否在不该张嘴的时候张嘴了
-    for (const recordedAction of recordedActions) {
-      const recordedStart = recordedAction.startTime
-      const recordedEnd = recordedAction.endTime
+    console.log('检查玩家表现:', {
+      playerIndex: gameState.playerIndex,
+      expectedActions: playerActions.length,
+      recordedActionsCount: recordedActions.length,
+      playerActions: playerActions.map((a, i) => ({
+        index: i,
+        start: a.startTime,
+        duration: a.duration
+      })),
+      recordedActionsList: recordedActions.map((a, i) => ({
+        index: i,
+        start: a.startTime,
+        end: a.endTime,
+        duration: a.endTime - a.startTime
+      }))
+    })
 
-      // 检查这个时间段是否有对应的预期动作
-      const hasValidAction = playerActions.some(expectedAction => {
-        const expectedStart = expectedAction.startTime
-        const expectedEnd = expectedAction.startTime + expectedAction.duration
-
-        // 宽松的时间重叠检查：只要有部分重叠就算有效
-        const overlapStart = Math.max(recordedStart, expectedStart - 600) // 允许提前600ms
-        const overlapEnd = Math.min(recordedEnd, expectedEnd + 600) // 允许延后600ms
-
-        return overlapStart < overlapEnd
-      })
-
-      if (!hasValidAction) {
-        hasError = true
-        errorMessage = '错误的张嘴时机！不该张嘴时张嘴了'
-        break
+    // 1. 检查张嘴次数是否正确
+    if (recordedActions.length !== playerActions.length) {
+      hasError = true
+      if (recordedActions.length < playerActions.length) {
+        errorMessage = `张嘴次数不够！应该张嘴${playerActions.length}次，实际只张了${recordedActions.length}次`
+      } else {
+        errorMessage = `张嘴次数过多！应该张嘴${playerActions.length}次，实际张了${recordedActions.length}次`
       }
     }
 
-    // 2. 宽松检查：玩家是否遗漏了应该张嘴的动作
-    if (!hasError) {
-      let missedActions = 0
+    // 2. 检查张嘴顺序和时机是否正确
+    if (!hasError && playerActions.length > 0) {
+      for (let i = 0; i < playerActions.length; i++) {
+        const expectedAction = playerActions[i]
+        const recordedAction = recordedActions[i]
 
-      for (const expectedAction of playerActions) {
+        if (!recordedAction) {
+          hasError = true
+          errorMessage = `第${i + 1}次张嘴缺失！`
+          break
+        }
+
         const expectedStart = expectedAction.startTime
-        const expectedEnd = expectedAction.startTime + expectedAction.duration
+        const recordedStart = recordedAction.startTime
+        const recordedEnd = recordedAction.endTime
 
-        // 查找是否有对应的玩家动作（宽松匹配）
-        const hasMatchingAction = recordedActions.some(recordedAction => {
-          const recordedStart = recordedAction.startTime
-          const recordedEnd = recordedAction.endTime
+        // 检查时机是否正确（允许±600ms误差）
+        const startTimeDiff = Math.abs(recordedStart - expectedStart)
 
-          // 宽松的时间重叠检查
-          const overlapStart = Math.max(recordedStart, expectedStart - 600)
-          const overlapEnd = Math.min(recordedEnd, expectedEnd + 600)
+        if (startTimeDiff > 600) {
+          hasError = true
+          errorMessage = `第${
+            i + 1
+          }次张嘴时机不对！开始时间偏差${startTimeDiff}ms`
+          break
+        }
 
-          return overlapStart < overlapEnd
-        })
+        // 检查时长是否合理（允许±800ms误差）
+        const expectedDuration = expectedAction.duration
+        const recordedDuration = recordedEnd - recordedStart
+        const durationDiff = Math.abs(recordedDuration - expectedDuration)
 
-        if (!hasMatchingAction) {
-          missedActions++
+        if (durationDiff > 800) {
+          hasError = true
+          errorMessage = `第${i + 1}次张嘴时长不对！时长偏差${durationDiff}ms`
+          break
         }
       }
+    }
 
-      // 如果遗漏了超过一半的动作，算作失败
-      if (
-        playerActions.length > 0 &&
-        missedActions > playerActions.length / 2
-      ) {
-        hasError = true
-        errorMessage = '遗漏了太多张嘴动作！'
+    // 3. 检查是否一直张嘴不闭嘴（检测超长张嘴）
+    if (!hasError && recordedActions.length > 0 && playerActions.length > 0) {
+      const maxAllowedDuration =
+        Math.max(...playerActions.map(a => a.duration)) + 1000 // 最长允许时间 + 1秒容错
+
+      for (let i = 0; i < recordedActions.length; i++) {
+        const recordedAction = recordedActions[i]
+        const recordedDuration =
+          recordedAction.endTime - recordedAction.startTime
+
+        if (recordedDuration > maxAllowedDuration) {
+          hasError = true
+          errorMessage = `第${i + 1}次张嘴时间太长！一直张嘴不闭嘴算失败`
+          break
+        }
       }
     }
 
-    // 3. 特殊情况：如果没有要求动作，但玩家张嘴了，算作错误
-    if (playerActions.length === 0 && recordedActions.length > 0) {
+    // 4. 特殊情况：如果没有要求动作，但玩家张嘴了，算作错误
+    if (!hasError && playerActions.length === 0 && recordedActions.length > 0) {
       hasError = true
-      errorMessage = '不该张嘴时张嘴了！'
+      errorMessage = '不该张嘴时张嘴了！这轮你应该保持安静'
     }
 
     if (hasError) {
@@ -214,7 +243,7 @@ export function useGameLogic() {
         gameState.playStartTime
       )
 
-      // 更新非玩家小人
+      // 更新非玩家小牛马
       setPlayPersons(prev =>
         prev.map(person => ({
           ...person,
@@ -253,9 +282,38 @@ export function useGameLogic() {
 
     // 只有在第一次开始游戏时（currentLevel为0）才随机选择玩家位置
     const shouldRandomizePlayer = gameState.currentLevel === 0
+
+    // 使用更好的随机算法，确保真正的均匀分布
+    const generateRandomPlayerIndex = () => {
+      // 方法1：使用crypto.getRandomValues获得更好的随机性（如果可用）
+      if (typeof crypto !== 'undefined' && crypto.getRandomValues) {
+        const array = new Uint32Array(1)
+        crypto.getRandomValues(array)
+        const result = array[0] % 5
+        console.log('使用crypto随机算法，结果:', result)
+        return result
+      }
+
+      // 方法2：使用多重随机数生成，避免Math.random()的潜在偏差
+      let randomValue = 0
+      // 生成多个随机数并组合，提高随机性
+      for (let i = 0; i < 5; i++) {
+        randomValue += Math.random()
+      }
+      // 使用模运算确保均匀分布
+      const result = Math.floor((randomValue % 1) * 5)
+      console.log('使用多重随机算法，结果:', result)
+      return result
+    }
+
     const newPlayerIndex = shouldRandomizePlayer
-      ? Math.floor(Math.random() * 5)
+      ? generateRandomPlayerIndex()
       : gameState.playerIndex
+
+    // 调试日志：记录随机选择的结果
+    if (shouldRandomizePlayer) {
+      console.log('随机选择玩家位置:', newPlayerIndex)
+    }
 
     setGameState(prev => ({
       ...prev,
@@ -265,7 +323,7 @@ export function useGameLogic() {
       isPlayerMouthOpen: false
     }))
 
-    // 使用新的玩家位置初始化小人
+    // 使用新的玩家位置初始化小牛马
     const initPersonsWithPlayer = () => {
       return Array.from({ length: 5 }, (_, index) => ({
         index,

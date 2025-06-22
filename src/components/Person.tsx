@@ -74,7 +74,7 @@ function Person({ index, isMouthOpen, isPlayer, size = 120 }: PersonProps) {
         flexDirection: 'column',
         alignItems: 'center',
         gap: '4px',
-        minHeight: size + 40 // 确保所有小人容器高度一致
+        minHeight: size + 40 // 确保所有小牛马容器高度一致
       }}
     >
       <div style={containerStyle}>
@@ -94,7 +94,7 @@ function Person({ index, isMouthOpen, isPlayer, size = 120 }: PersonProps) {
         )}
       </div>
 
-      {/* YOU标签区域 - 所有小人都有这个区域，但只有玩家显示内容 */}
+      {/* YOU标签区域 - 所有小牛马都有这个区域，但只有玩家显示内容 */}
       <div
         style={{
           height: '16px', // 固定高度确保对齐
