@@ -4,7 +4,7 @@ import { useGameLogic } from '../hooks/useGameLogic'
 import { useKeyboardControl } from '../hooks/useKeyboardControl'
 import { useBackgroundMusic } from '../hooks/useBackgroundMusic'
 import { gameLevels } from '../data/levels'
-
+// import { useStateTogether } from 'react-together'
 // 称号系统 - 新的分数要求
 const getTitleByScore = (score: number): string => {
   if (score < 50) return '小笨嘴'
