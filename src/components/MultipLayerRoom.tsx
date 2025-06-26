@@ -4,6 +4,7 @@ import {
   useConnectedUsers,
   useStateTogether
 } from 'react-together'
+import { useNavigate } from 'react-router-dom'
 
 interface MultipLayerRoomProps {
   name: string
@@ -105,17 +106,20 @@ const leaveButtonStyle: React.CSSProperties = {
 
 function MultipLayerRoomContent({
   name,
-  onLeaveRoom
+  onLeaveRoom,
+  roomId
 }: {
   name: string
   onLeaveRoom: () => void
+  roomId: string
 }) {
   const users = useConnectedUsers()
   const [playersState, setPlayersState] = useStateTogether('players', {}) as [
     Record<string, { name: string; isReady: boolean; isHost: boolean }>,
     (v: any) => void
   ]
-  const [gameStarted, setGameStarted] = useState(false)
+  const [gameStarted, setGameStarted] = useStateTogether('gameStarted', false)
+  const navigate = useNavigate()
 
   const myId = users.find(u => u.isYou)?.userId || ''
   const myState = playersState[myId] || { name, isReady: false, isHost: false }
@@ -236,6 +240,13 @@ function MultipLayerRoomContent({
     }
   }, [users.length, setPlayersState])
 
+  // 所有玩家监听 gameStarted 状态变化
+  useEffect(() => {
+    if (gameStarted) {
+      navigate(`/multi/game/${encodeURIComponent(roomId)}`)
+    }
+  }, [gameStarted, navigate, roomId])
+
   function handleReady() {
     setPlayersState({
       ...playersState,
@@ -244,7 +255,9 @@ function MultipLayerRoomContent({
   }
 
   function handleStartGame() {
-    if (canStart && isHost) setGameStarted(true)
+    if (canStart && isHost) {
+      setGameStarted(true)
+    }
   }
 
   // 主动离开房间
@@ -321,6 +334,9 @@ export function MultipLayerRoom({
   roomId,
   onLeaveRoom
 }: MultipLayerRoomProps) {
+  // 使用 localStorage 中的 userId，确保与联机游戏页面使用相同的 session
+  const userId = localStorage.getItem('mouth-game-user') || name
+
   return (
     <ReactTogether
       sessionParams={{
@@ -329,9 +345,13 @@ export function MultipLayerRoom({
         name: roomId,
         password: 'mouth-game-room'
       }}
-      userId={name}
+      userId={userId}
     >
-      <MultipLayerRoomContent name={name} onLeaveRoom={onLeaveRoom} />
+      <MultipLayerRoomContent
+        name={name}
+        onLeaveRoom={onLeaveRoom}
+        roomId={roomId}
+      />
     </ReactTogether>
   )
 }

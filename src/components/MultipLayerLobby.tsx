@@ -117,6 +117,7 @@ export function MultipLayerLobby() {
     setIsLoading(true)
     setTimeout(() => {
       setIsLoading(false)
+      localStorage.setItem('mouth-game-user', name.trim())
       setEnterRoom({ name: name.trim(), roomId: roomId.trim() })
     }, 500)
   }

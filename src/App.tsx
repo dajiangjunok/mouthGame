@@ -1,15 +1,33 @@
 import './App.css'
 import MusicGame from './components/MusicGame'
 import { MultipLayerLobby } from './components/MultipLayerLobby'
-import React, { useState } from 'react'
+import { MultipMusicGame } from './components/MultipMusicGame'
+import { MultipMusicGamePage } from './components/MultipMusicGamePage'
+
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  useNavigate,
+  useParams
+} from 'react-router-dom'
 
 function App() {
-  const [mode, setMode] = useState<'select' | 'single' | 'multi'>('select')
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<ModeSelect />} />
+        <Route path="/single" element={<MusicGame />} />
+        <Route path="/multi" element={<MultipLayerLobby />} />
+        <Route path="/multi/room/:roomId" element={<MultipLayerLobby />} />
+        <Route path="/multi/game/:roomId" element={<MultipMusicGamePage />} />
+      </Routes>
+    </BrowserRouter>
+  )
+}
 
-  if (mode === 'single') return <MusicGame />
-  if (mode === 'multi') return <MultipLayerLobby />
-
-  // 选择页面样式
+function ModeSelect() {
+  const navigate = useNavigate()
   return (
     <div
       style={{
@@ -65,7 +83,7 @@ function App() {
             boxShadow: '4px 4px 0 #000',
             transition: 'all 0.1s'
           }}
-          onClick={() => setMode('single')}
+          onClick={() => navigate('/single')}
         >
           单机版
         </button>
@@ -83,13 +101,19 @@ function App() {
             boxShadow: '4px 4px 0 #000',
             transition: 'all 0.1s'
           }}
-          onClick={() => setMode('multi')}
+          onClick={() => navigate('/multi')}
         >
           联机版
         </button>
       </div>
     </div>
   )
+}
+
+function MultipMusicGameWrapper() {
+  // 这里可以通过 useParams 获取 roomId，后续可用于联机逻辑
+  const { roomId } = useParams<{ roomId: string }>()
+  return <MultipMusicGame roomId={roomId || ''} />
 }
 
 export default App
